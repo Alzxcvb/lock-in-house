@@ -130,7 +130,6 @@
     border-radius:12px;padding:30px;text-align:center}
   .done h3{color:var(--ok);margin-bottom:10px;font-size:20px}
   .done p{color:var(--tx2);font-size:15.5px}
-  .hp{position:absolute;left:-9999px}
 
   /* faq */
   details{border-bottom:1px solid var(--line);padding:19px 0}
@@ -202,9 +201,9 @@
 <section id="who"><div class="wrap">
   <div class="kicker">Who it is for</div>
   <h2>A small NS, in Da Nang</h2>
-  <p class="sub">Same idea as Network School, at house scale. A room full of high achieving people working on their own thing, where nobody needs to be told to get on with it.</p>
+  <p class="sub">Same idea as Network School, at house scale. A house full of high achieving people working on their own thing, where nobody needs to be told to get on with it.</p>
   <div class="grid3">
-    <div class="card"><span class="ic">🔁</span><h3>You were at the pop up</h3><p>Jake and Debby's August was good and you are not ready for it to be over. Same people, same city, one more month.</p></div>
+    <div class="card"><span class="ic">🔁</span><h3>You were at the pop up</h3><p>August with Jake and Debby was good and you are not ready for it to be over. Same people, same city, one more month.</p></div>
     <div class="card"><span class="ic">🛠️</span><h3>You are building something</h3><p>A company, a product, a book, a body of work. Something with your name on it that is not finished yet.</p></div>
     <div class="card"><span class="ic">📉</span><h3>Alone is not working</h3><p>You have proven you can do it from a room by yourself. You have also noticed how much slower that is.</p></div>
   </div>
@@ -280,7 +279,8 @@
       <h3>Got it</h3>
       <p id="donemsg">You are on the list. Alex will come back to you with the address, the room and how to pay. Nothing is charged and nothing is booked until you hear back.</p>
       <div id="fallback" style="display:none;margin-top:22px;text-align:left">
-        <p style="font-size:14px;color:var(--tx3);margin-bottom:10px">If your email app did not open, copy this and send it to <b style="color:var(--tx2)">hiimalexllc@gmail.com</b>.</p>
+        <p style="font-size:14px;color:var(--tx3);margin-bottom:10px">Prefer to send it yourself? Copy the details and email <b style="color:var(--tx2)">hiimalexllc@gmail.com</b>.</p>
+        <label for="fbtext" style="position:absolute;left:-9999px">Your reservation details</label>
         <textarea id="fbtext" readonly style="min-height:132px;font-size:14px"></textarea>
         <button type="button" class="btn" id="copybtn" style="margin-top:10px">Copy it</button>
       </div>
@@ -370,18 +370,22 @@
     document.getElementById('fbtext').value = body;
     document.getElementById('fallback').style.display = 'block';
     document.getElementById('copybtn').addEventListener('click', function(){
-      var ta = document.getElementById('fbtext');
+      var ta = document.getElementById('fbtext'), btn = this;
       ta.select();
-      if (navigator.clipboard) navigator.clipboard.writeText(ta.value);
-      else document.execCommand('copy');
-      this.textContent = 'Copied';
+      function ok(){ btn.textContent = 'Copied'; }
+      function no(){ btn.textContent = 'Press Ctrl C or Cmd C'; }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(ok).catch(no);
+      } else {
+        try { document.execCommand('copy') ? ok() : no(); } catch(e){ no(); }
+      }
     });
 
     window.location.href = "mailto:" + TO +
       "?subject=" + encodeURIComponent("Lock In House room: " + data.name) +
       "&body=" + encodeURIComponent(body);
 
-    finish("Your email app should be opening with everything filled in. Hit send and the room is held.");
+    finish("Your email app should be opening with everything filled in. Send it and you are on the list. Nothing is charged and nothing is booked until you hear back.");
   });
 })();
 </script>
